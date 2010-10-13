@@ -1,0 +1,98 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Canvas drawImage example 1</title>
+    <script type="application/x-javascript">
+function draw(pic) {
+   var ctx = document.getElementById('canvas').getContext('2d');
+   var img = new Image();
+   img.src = '3_1_canvas_drawimage_files/' + pic;
+   img.onload = function() {
+      ctx.drawImage(img,0,0);
+      var bits = analyze(ctx);
+      results(bits.distinct, bits.vals, bits.colors);
+   }
+}
+function analyze(ctx) {
+   var canvas = ctx.getImageData(0,0, 63,72);
+   var data = canvas.data;
+   console.log(canvas.width * canvas.height);
+   colors = {}, distinct = 0, vals = [];
+   for(var i = 0; i < data.length; i+=4) {
+      var r = data[i],
+      g = data[i + 1],
+      b = data[i + 2],
+      a = data[i + 3];
+      if (colors[r] == null) { colors[r] = {}; }
+      if (colors[r][g] == null) { colors[r][g] = {}; }
+      if (colors[r][g][b] == null) { colors[r][g][b] = {}; }
+      if (colors[r][g][b][a] == null) { 
+         // first time we've seen it
+         if (r == 255 && g == 0 && b == 255 && a == 255) continue;
+         distinct++;
+         vals.push([r,g,b,a]);
+         colors[r][g][b][a] = 0;
+      }
+      colors[r][g][b][a]++;
+   }
+   console.log(colors, distinct, vals);
+   return { colors: colors, distinct: distinct, vals: vals };
+}
+function results(distinct, vals, colors) {
+   var ctx = document.getElementById('canvas2').getContext('2d');
+   var w = ctx.canvas.width, h = ctx.canvas.height;
+   var divs = distinct % 2 ? distinct + 1 : distinct;
+   divs = 4;
+   var x = 0;
+   for (var i=0;i<4;i++) {
+      for (var j=0;j<4;j++) {
+         var c = vals[x++] || [0,0,0,0];
+         console.log(i,j,c);
+         ctx.fillStyle = 'rgba('+c[0]+','+c[1]+','+c[2]+','+c[3]+')';
+         ctx.fillRect(i*w/divs, j*h/divs, w/divs, h/divs);
+      }
+   }
+   addResult('Colors: '+distinct);
+   var totes = 0;
+   for (r in colors) {
+      for (g in colors[r]) {
+         for (b in colors[r][g]) {
+            for (a in colors[r][g][b]) {
+               totes += colors[r][g][b][a];
+               //addResult('Bead color '
+            }
+         }
+      }
+   }
+   addResult('pixels: '+totes);
+}
+function addResult (text) {
+   var s = document.createElement('span');
+   s.innerHTML = text;
+   document.getElementById('result').appendChild(s);
+}
+function canvasClick () {
+   document.getElementById('result').innerHTML='';
+   draw('knives.png');
+}
+    </script>
+    <style type="text/css">
+      body { margin: 20px; font-family: arial,verdana,helvetica; background: #fff;}
+      h1 { font-size: 140%; font-weight:normal; color: #036; border-bottom: 1px solid #ccc; }
+      h2 { font-size: 100%; color: #036; }
+      #c1 { float: left; margin-right: 20px; margin-bottom: 20px; }
+      #c2 { float: right; }
+      #result span { padding: 10px; }
+    </style>
+  </head>
+  <body onload="draw('scott.png');">
+    <div id="c1">
+      <canvas id="canvas" width="300" height="300" onClick="canvasClick()"></canvas>
+    </div>
+    <div id="result"> </div>
+    <div id="c2">
+      <canvas id="canvas2" width="300" height="300"></canvas>
+    </div>
+  
+
+</body></html>
