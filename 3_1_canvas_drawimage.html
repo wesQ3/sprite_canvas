@@ -3,20 +3,22 @@
 
     <title>Canvas drawImage example 1</title>
     <script type="application/x-javascript">
+var pix = ['simonbelmont.png','tails.png','knives.png','scott.png'];
+var current = 0;
 function draw(pic) {
    var ctx = document.getElementById('canvas').getContext('2d');
    var img = new Image();
    img.src = '3_1_canvas_drawimage_files/' + pic;
    img.onload = function() {
       ctx.drawImage(img,0,0);
-      var bits = analyze(ctx);
+      var bits = analyze(ctx, img);
       results(bits.distinct, bits.vals, bits.colors);
    }
 }
-function analyze(ctx) {
-   var canvas = ctx.getImageData(0,0, 63,72);
+function analyze(ctx, img) {
+   var canvas = ctx.getImageData(0,0, img.height,img.width);
    var data = canvas.data;
-   console.log(canvas.width * canvas.height);
+   //console.log(canvas.width * canvas.height);
    colors = {}, distinct = 0, vals = [];
    for(var i = 0; i < data.length; i+=4) {
       var r = data[i],
@@ -28,14 +30,15 @@ function analyze(ctx) {
       if (colors[r][g][b] == null) { colors[r][g][b] = {}; }
       if (colors[r][g][b][a] == null) { 
          // first time we've seen it
-         if (r == 255 && g == 0 && b == 255 && a == 255) continue;
+         if (r==data[0] && g==data[1] && b==data[2] && a==data[3]) 
+            continue; // skip the origin color, its the bg
          distinct++;
          vals.push([r,g,b,a]);
          colors[r][g][b][a] = 0;
       }
       colors[r][g][b][a]++;
    }
-   console.log(colors, distinct, vals);
+   //console.log(colors, distinct, vals);
    return { colors: colors, distinct: distinct, vals: vals };
 }
 function results(distinct, vals, colors) {
@@ -47,7 +50,7 @@ function results(distinct, vals, colors) {
    for (var i=0;i<4;i++) {
       for (var j=0;j<4;j++) {
          var c = vals[x++] || [0,0,0,0];
-         console.log(i,j,c);
+         //console.log(i,j,c);
          ctx.fillStyle = 'rgba('+c[0]+','+c[1]+','+c[2]+','+c[3]+')';
          ctx.fillRect(i*w/divs, j*h/divs, w/divs, h/divs);
       }
@@ -73,7 +76,9 @@ function addResult (text) {
 }
 function canvasClick () {
    document.getElementById('result').innerHTML='';
-   draw('knives.png');
+   var show = current++ % pix.length;
+   console.log(show);
+   draw(pix[show]);
 }
     </script>
     <style type="text/css">
@@ -85,7 +90,7 @@ function canvasClick () {
       #result span { padding: 10px; }
     </style>
   </head>
-  <body onload="draw('scott.png');">
+  <body onload="draw(pix[0]);">
     <div id="c1">
       <canvas id="canvas" width="300" height="300" onClick="canvasClick()"></canvas>
     </div>
