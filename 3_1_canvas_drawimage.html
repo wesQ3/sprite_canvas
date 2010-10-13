@@ -16,7 +16,7 @@ function draw(pic) {
    }
 }
 function analyze(ctx, img) {
-   var canvas = ctx.getImageData(0,0, img.height,img.width);
+   var canvas = ctx.getImageData(0,0, img.width,img.height);
    var data = canvas.data;
    //console.log(canvas.width * canvas.height);
    colors = {}, distinct = 0, vals = [];
