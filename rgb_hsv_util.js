@@ -8,7 +8,8 @@
 * @param {Integer} v Value as a value between 0 - 100 %
 * @returns {Array} The RGB values  EG: [r,g,b], [255,255,255]
 */
-function hsvToRgb(h,s,v) {
+window.Color = {};
+Color.hsvToRgb = function (h,s,v) {
 
     var s = s / 100,
          v = v / 100;
@@ -46,7 +47,7 @@ function hsvToRgb(h,s,v) {
 * @param {Integer} b Blue value, 0-255
 * @returns {Array} The HSV values EG: [h,s,v], [0-360 degrees, 0-100%, 0-100%]
 */
-function rgbToHsv(r, g, b) {
+Color.rgbToHsv = function (r, g, b) {
 
     var r = (r / 255),
          g = (g / 255),

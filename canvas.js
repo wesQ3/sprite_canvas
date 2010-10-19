@@ -36,8 +36,25 @@ function analyze(ctx, img) {
       colors[r][g][b][a]++;
    }
    //console.log(colors, distinct, vals);
-   vals.sort(sumColorSort);
+   vals.sort(hsvSort);
    return { colors: colors, distinct: distinct, vals: vals };
+}
+function hsvSort (a,b) {
+   var hsvA = Color.rgbToHsv(a[0], a[1], a[2]), 
+       hsvB = Color.rgbToHsv(b[0], b[1], b[2]);
+
+   if (hsvA[0] > hsvB[0]) {
+      return 1;
+   } else if (hsvA[1] > hsvB[1]) {
+      return 1;
+   } else if (hsvA[2] > hsvB[2]) {
+      return 1;
+   } 
+   if(hsvA[0] == hsvB[0] && 
+      hsvA[1] == hsvB[1] && 
+      hsvA[2] == hsvB[2])
+      return 0;
+   return -1;
 }
 function sumColorSort (a,b) {
    var A = a[0] + a[1] + a[2] + a[3];
