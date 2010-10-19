@@ -1,4 +1,4 @@
-var pix = ['simonbelmont.png','tails.png','knives.png','scott.png'];
+var pix = ['simonbelmont.png','tails.png','knives.png','scott.png','yotsu.png'];
 var current = 0;
 function draw(pic) {
    var canvas = document.getElementById('canvas');
@@ -42,11 +42,10 @@ function results(distinct, vals, colors) {
    var ctx = document.getElementById('canvas2').getContext('2d');
    var w = ctx.canvas.width, h = ctx.canvas.height;
    ctx.clearRect(0,0,w,h);
-   var divs = distinct % 2 ? distinct + 1 : distinct;
-   divs = 4;
+   var divs = Math.ceil( Math.sqrt(distinct) );
    var x = 0;
-   for (var i=0;i<4;i++) {
-      for (var j=0;j<4;j++) {
+   for (var i=0;i<divs;i++) {
+      for (var j=0;j<divs;j++) {
          var c = vals[x++] || [0,0,0,0];
          //console.log(i,j,c);
          ctx.fillStyle = 'rgba('+c[0]+','+c[1]+','+c[2]+','+c[3]+')';
@@ -75,6 +74,5 @@ function addResult (text) {
 function doIt() {
    document.getElementById('result').innerHTML='';
    var show = current++ % pix.length;
-   console.log(show);
    draw(pix[show]);
 }
