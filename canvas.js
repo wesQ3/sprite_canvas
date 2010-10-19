@@ -36,7 +36,21 @@ function analyze(ctx, img) {
       colors[r][g][b][a]++;
    }
    //console.log(colors, distinct, vals);
+   vals.sort(colorsort);
    return { colors: colors, distinct: distinct, vals: vals };
+}
+function colorsort (a,b) {
+   if(a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3])
+      return 0;
+   if (a[0] > b[0]) {
+      return 1;
+   } else if (a[1] > b[1]) {
+      return 1;
+   } else if (a[2] > b[2]) {
+      return 1;
+   } else if (a[3] > b[3]) {
+      return -1;
+   }
 }
 function results(distinct, vals, colors) {
    var ctx = document.getElementById('canvas2').getContext('2d');
