@@ -36,10 +36,17 @@ function analyze(ctx, img) {
       colors[r][g][b][a]++;
    }
    //console.log(colors, distinct, vals);
-   vals.sort(colorsort);
+   vals.sort(sumColorSort);
    return { colors: colors, distinct: distinct, vals: vals };
 }
-function colorsort (a,b) {
+function sumColorSort (a,b) {
+   var A = a[0] + a[1] + a[2] + a[3];
+   var B = b[0] + b[1] + b[2] + b[3];
+   if (A > B ) return 1
+   if (A < B ) return -1;
+   return 0;
+}
+function naiveColorSort (a,b) {
    if(a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3])
       return 0;
    if (a[0] > b[0]) {
