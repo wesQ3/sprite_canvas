@@ -41,6 +41,7 @@ function analyze(ctx, img) {
 function results(distinct, vals, colors) {
    var ctx = document.getElementById('canvas2').getContext('2d');
    var w = ctx.canvas.width, h = ctx.canvas.height;
+   ctx.clearRect(0,0,w,h);
    var divs = distinct % 2 ? distinct + 1 : distinct;
    divs = 4;
    var x = 0;
@@ -71,7 +72,7 @@ function addResult (text) {
    s.innerHTML = text;
    document.getElementById('result').appendChild(s);
 }
-function canvasClick () {
+function doIt() {
    document.getElementById('result').innerHTML='';
    var show = current++ % pix.length;
    console.log(show);
