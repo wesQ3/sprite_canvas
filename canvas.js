@@ -16,7 +16,11 @@ function analyze(ctx, img) {
    var canvas = ctx.getImageData(0,0, img.width,img.height);
    var data = canvas.data;
    //console.log(canvas.width * canvas.height);
-   colors = {}, distinct = 0, vals = [];
+   var colors = {}, distinct = 0, vals = [];
+   colors[data[0]] = {};
+   colors[data[0]][data[1]] = {};
+   colors[data[0]][data[1]][data[2]] = {};
+   colors[data[0]][data[1]][data[2]][data[3]] = 'bg';
    for(var i = 0; i < data.length; i+=4) {
       var r = data[i],
       g = data[i + 1],
@@ -27,14 +31,18 @@ function analyze(ctx, img) {
       if (colors[r][g][b] == null) { colors[r][g][b] = {}; }
       if (colors[r][g][b][a] == null) { 
          // first time we've seen it
-         if (r==data[0] && g==data[1] && b==data[2] && a==data[3]) 
-            continue; // skip the origin color, its the bg
          distinct++;
          vals.push([r,g,b,a]);
          colors[r][g][b][a] = 0;
       }
+      if (colors[r][g][b][a] == 'bg') { 
+         data[i] = data[i+1] = data[i+2] = data[i+3] = 0;
+         continue;
+      }
       colors[r][g][b][a]++;
    }
+   ctx.putImageData(canvas, 0,0);
+   //delete colors[data[0]][data[1]][data[2]][data[3]];
    //console.log(colors, distinct, vals);
    vals.sort(hueSort);
    return { colors: colors, distinct: distinct, vals: vals };
@@ -108,6 +116,7 @@ function results(distinct, vals, colors) {
       for (g in colors[r]) {
          for (b in colors[r][g]) {
             for (a in colors[r][g][b]) {
+               if (colors[r][g][b][a] == 'bg') continue;
                totes += colors[r][g][b][a];
                //addResult('Bead color '
             }
