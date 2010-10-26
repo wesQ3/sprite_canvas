@@ -99,7 +99,10 @@ function naiveColorSort (a,b) {
 function results(distinct, vals, colors) {
    var ctx = $('#result-canvas').get(0).getContext('2d');
    var w = ctx.canvas.width, h = ctx.canvas.height;
+   // clean up
    ctx.clearRect(0,0,w,h);
+   document.getElementById('result').innerHTML='';
+
    var divs = Math.ceil( Math.sqrt(distinct) );
    var x = 0;
    for (var i=0;i<divs;i++) {
@@ -131,8 +134,21 @@ function addResult (text) {
    document.getElementById('result').appendChild(s);
 }
 function doIt() {
-   document.getElementById('result').innerHTML='';
    var show = current++ % pix.length;
    draw(pix[show]);
 }
-$(document).ready(function() { doIt(); });
+var setBackgroundColor = function (e) {
+   var canv = $('#source-canvas').get(0);
+   var loc = { x: e.clientX-canv.offsetLeft, y: e.clientY-canv.offsetTop };
+   var ctx = canv.getContext('2d');
+   var imgdata = ctx.getImageData(0,0,canv.width,canv.height);
+   var offset = ( loc.y * imgdata.width + loc.x ) * 4;
+   var pixel = imgdata.data.slice(offset, offset+4);
+   console.log(pixel);
+   results(1,[pixel],[]);
+};
+$(document).ready(function() { 
+   $('#source-canvas').bind('mousedown', setBackgroundColor);
+   $('#nextButton').bind('mousedown', doIt);
+   doIt();
+});
