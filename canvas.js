@@ -1,13 +1,18 @@
 var pix = ['simonbelmont.png','tails.png','knives.png','scott.png','yotsu.png'];
 var current = 0;
 function draw(pic) {
-   var canvas = $('#source-canvas').get(0);
+   var canvas = Canvas.source;
    var ctx = canvas.getContext('2d'); 
    var img = new Image();
    img.src = pic;
    img.onload = function() {
+      ctx.mozImageSmoothingEnabled = false;
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img,0,0);
+      if ($('#scaleCheck').get(0).checked) {
+         ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      } else {
+         ctx.drawImage(img,0,0);
+      }
       var bits = analyze(ctx, img);
       results(bits.distinct, bits.vals, bits.colors);
    }
@@ -97,7 +102,7 @@ function naiveColorSort (a,b) {
    }
 }
 function results(distinct, vals, colors) {
-   var ctx = $('#result-canvas').get(0).getContext('2d');
+   var ctx = Canvas.result.getContext('2d');
    var w = ctx.canvas.width, h = ctx.canvas.height;
    // clean up
    ctx.clearRect(0,0,w,h);
@@ -137,18 +142,22 @@ function doIt() {
    var show = current++ % pix.length;
    draw(pix[show]);
 }
-var setBackgroundColor = function (e) {
-   var canv = $('#source-canvas').get(0);
+function setBackgroundColor(e) {
+   var canv = Canvas.source;
    var loc = { x: e.clientX-canv.offsetLeft, y: e.clientY-canv.offsetTop };
    var ctx = canv.getContext('2d');
    var imgdata = ctx.getImageData(0,0,canv.width,canv.height);
    var offset = ( loc.y * imgdata.width + loc.x ) * 4;
    var pixel = imgdata.data.slice(offset, offset+4);
-   console.log(pixel);
-   results(1,[pixel],[]);
+   results(1,[pixel],[]); // even ghetto reuse is good reuse, right?
 };
 $(document).ready(function() { 
+   window.Canvas = {
+      source: $('#source-canvas').get(0),
+      result: $('#result-canvas').get(0)
+   };
    $('#source-canvas').bind('mousedown', setBackgroundColor);
    $('#nextButton').bind('mousedown', doIt);
+   $('#scaleButton').bind('mousedown', scaleSrcImg);
    doIt();
 });
