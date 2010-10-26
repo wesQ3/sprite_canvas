@@ -9,7 +9,10 @@ function draw(pic) {
       ctx.mozImageSmoothingEnabled = false;
       ctx.clearRect(0,0,canvas.width,canvas.height);
       if ($('#scaleCheck').get(0).checked) {
-         ctx.drawImage(img,0,0,canvas.width,canvas.height);
+         var scaleF = img.width > img.height ?
+            canvas.width / img.width :
+            canvas.height / img.height;
+         ctx.drawImage(img,0,0,img.width*scaleF,img.height*scaleF);
       } else {
          ctx.drawImage(img,0,0);
       }
@@ -158,6 +161,5 @@ $(document).ready(function() {
    };
    $('#source-canvas').bind('mousedown', setBackgroundColor);
    $('#nextButton').bind('mousedown', doIt);
-   $('#scaleButton').bind('mousedown', scaleSrcImg);
    doIt();
 });
