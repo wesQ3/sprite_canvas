@@ -2,6 +2,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
     <title>Canvas drawImage example 1</title>
+    <script src="http://code.jquery.com/jquery-1.4.3.js"></script>
     <script src="rgb_hsv_util.js"></script>
     <script src="canvas.js"></script>
     <style type="text/css">
@@ -13,15 +14,13 @@
       #result span { padding: 10px; }
     </style>
   </head>
-  <body onload="doIt(pix[0]);">
+  <body>
     <div id="c1">
-      <canvas id="canvas" width="300" height="300" onClick="doIt()">
+      <canvas id="source-canvas" width="300" height="300" onClick="doIt()">
       It's a canvas party, and your browser isn't invited.</canvas>
     </div>
     <div id="result"> </div>
     <div id="c2">
-      <canvas id="canvas2" width="300" height="300"></canvas>
+      <canvas id="result-canvas" width="300" height="300"></canvas>
     </div>
-  
-
 </body></html>

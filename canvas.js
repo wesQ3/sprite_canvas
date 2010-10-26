@@ -1,7 +1,7 @@
 var pix = ['simonbelmont.png','tails.png','knives.png','scott.png','yotsu.png'];
 var current = 0;
 function draw(pic) {
-   var canvas = document.getElementById('canvas');
+   var canvas = $('#source-canvas').get(0);
    var ctx = canvas.getContext('2d'); 
    var img = new Image();
    img.src = pic;
@@ -97,7 +97,7 @@ function naiveColorSort (a,b) {
    }
 }
 function results(distinct, vals, colors) {
-   var ctx = document.getElementById('canvas2').getContext('2d');
+   var ctx = $('#result-canvas').get(0).getContext('2d');
    var w = ctx.canvas.width, h = ctx.canvas.height;
    ctx.clearRect(0,0,w,h);
    var divs = Math.ceil( Math.sqrt(distinct) );
@@ -135,3 +135,4 @@ function doIt() {
    var show = current++ % pix.length;
    draw(pix[show]);
 }
+$(document).ready(function() { doIt(); });
