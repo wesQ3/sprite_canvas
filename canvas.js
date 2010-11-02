@@ -1,6 +1,6 @@
 var pix = ['simonbelmont.png','tails.png','knives.png','scott.png','yotsu.png'];
 var current = 0;
-function draw(pic) {
+function drawSource(pic) {
    var canvas = Canvas.source;
    var ctx = canvas.getContext('2d'); 
    var img = new Image();
@@ -23,17 +23,17 @@ function draw(pic) {
 function analyze(ctx, img) {
    var canvas = ctx.getImageData(0,0, img.width,img.height);
    var data = canvas.data;
-   //console.log(canvas.width * canvas.height);
+   //Wes.iterateCanvas(canvas, function(ary) { console.log(ary) });
    var colors = {}, distinct = 0, vals = [];
    colors[data[0]] = {};
    colors[data[0]][data[1]] = {};
    colors[data[0]][data[1]][data[2]] = {};
    colors[data[0]][data[1]][data[2]][data[3]] = 'bg';
-   for(var i = 0; i < data.length; i+=4) {
-      var r = data[i],
-      g = data[i + 1],
-      b = data[i + 2],
-      a = data[i + 3];
+   Wes.iterateCanvas(canvas, function(pixel, bigary, i) {
+      var r = pixel[0],
+         g = pixel[1],
+         b = pixel[2],
+         a = pixel[3];
       if (colors[r] == null) { colors[r] = {}; }
       if (colors[r][g] == null) { colors[r][g] = {}; }
       if (colors[r][g][b] == null) { colors[r][g][b] = {}; }
@@ -44,11 +44,11 @@ function analyze(ctx, img) {
          colors[r][g][b][a] = 0;
       }
       if (colors[r][g][b][a] == 'bg') { 
-         data[i] = data[i+1] = data[i+2] = data[i+3] = 0;
-         continue;
+         bigary[i] = bigary[i+1] = bigary[i+2] = bigary[i+3] = 0;
+      } else {
+         colors[r][g][b][a]++;
       }
-      colors[r][g][b][a]++;
-   }
+   });
    ctx.putImageData(canvas, 0,0);
    //delete colors[data[0]][data[1]][data[2]][data[3]];
    //console.log(colors, distinct, vals);
@@ -143,7 +143,7 @@ function addResult (text) {
 }
 function doIt() {
    var show = current++ % pix.length;
-   draw(pix[show]);
+   drawSource(pix[show]);
 }
 function setBackgroundColor(e) {
    var canv = Canvas.source;
@@ -152,7 +152,9 @@ function setBackgroundColor(e) {
    var imgdata = ctx.getImageData(0,0,canv.width,canv.height);
    var offset = ( loc.y * imgdata.width + loc.x ) * 4;
    var pixel = imgdata.data.slice(offset, offset+4);
-   results(1,[pixel],[]); // even ghetto reuse is good reuse, right?
+   Canvas.bgColor = pixel;
+   //results(1,[pixel],[]); // even ghetto reuse is good reuse, right?
+   doIt();
 };
 $(document).ready(function() { 
    window.Canvas = {
