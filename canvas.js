@@ -55,6 +55,7 @@ function analyze(ctx, img) {
    vals.sort(hueSort);
    return { colors: colors, distinct: distinct, vals: vals };
 }
+
 function hueSort (a,b) {
    var hsvA = Color.rgbToHsv(a[0], a[1], a[2]), 
        hsvB = Color.rgbToHsv(b[0], b[1], b[2]);
